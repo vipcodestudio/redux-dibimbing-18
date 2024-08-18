@@ -47,14 +47,26 @@ const cartsSlice = createSlice({
   reducers: {
     addToCart(state, action) {
       state.items.push(action.payload);
-      state.totalPrice += action.payload.price;
+      const totalPriceCurrent = state.items.reduce(
+        (total, item) => total + item.price * item.qty,
+        0,
+      );
+      state.totalPrice = totalPriceCurrent;
+    },
+    deleteFromCart(state, action) {
+      state.items = state.items.filter((item) => item.id !== action.payload);
+      const totalPriceCurrent = state.items.reduce(
+        (total, item) => total + item.price * item.qty,
+        0,
+      );
+      state.totalPrice = totalPriceCurrent;
     },
   },
 });
 
 const { deposit, withdraw, changePIN } = accountSlice.actions;
 const { toggle } = darkmodeSlice.actions;
-const { addToCart } = cartsSlice.actions;
+const { addToCart, deleteFromCart } = cartsSlice.actions;
 
 const store = configureStore({
   reducer: {
@@ -84,6 +96,10 @@ const handleAddToCart = (payload) => {
   store.dispatch(addToCart(payload));
 };
 
+const handleDeleteFromCart = (payload) => {
+  store.dispatch(deleteFromCart(payload));
+};
+
 handleDeposit(500000);
 handleDeposit(1000000);
 handleWithdraw(100000);
@@ -94,10 +110,14 @@ handleAddToCart({
   id: 1,
   name: 'Baju Batik',
   price: 50000,
+  qty: 1,
 });
 handleAddToCart({
   id: 2,
   name: 'Baju Bola',
   price: 100000,
+  qty: 2,
 });
-console.log(store.getState());
+console.log(store.getState().carts);
+handleDeleteFromCart(1);
+console.log(store.getState().carts);
