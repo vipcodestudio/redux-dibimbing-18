@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.7",
     "redux": "^5.0.1"
   },
   "type": "module"
